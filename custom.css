@@ -1,0 +1,43 @@
+body {
+    background: #525252;
+    text-align: center;
+    border: 0;
+    margin: 0;
+}
+
+#p5Container {
+    position: relative;
+    width: 400px;
+    margin: 0 auto;
+}
+
+#chicken {
+    position: absolute;
+    z-index: 10;
+    background-color: black;
+    width: 100%;
+    padding: 2px 0 5px 0;
+    display: none;
+}
+
+#caption {
+    position: absolute;
+    top: 40%;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.8);
+    line-height: 200%;
+    padding: 20px 0;
+    transition: 1s;
+    width: 100%;
+}
+
+p {
+    text-align: center;
+    color: #53ff60;
+    font-family: pixel;
+}
+
+@font-face {
+    font-family: pixel;
+    src: url(pixelGosub.otf);
+}
