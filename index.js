@@ -1,6 +1,6 @@
 var me, repeller;
-var vel_me = 3;
-var vel_chicken = 4;
+var vel_me = 0;
+var vel_chicken = 0;
 var fences, chickens;
 var SCENE_W = 600;
 var SCENE_H = 530;
@@ -14,64 +14,73 @@ var updateSpritesActived = false;
 
 
 
+var data = null;
+
+
+function preload() {
+
+        data = loadJSON("data.json");
+
+}
+
 function setup() {
-        var game = createCanvas(400, 600);
-        game.parent('p5Container');
+    var game = createCanvas(400, 600);
+    game.parent('p5Container');
 
-        //initial background color
-        r = 58;
-        g = 207;
-        b = 201;
+    //initial background color
+    r = data.stage1.background.red;
+    g = data.stage1.background.green;
+    b = data.stage1.background.blue;
 
-        me = createSprite(width / 2, height / 2 - 30); //create sprite at location 600, 300, width 50, height 100
-        me.addAnimation("stand", "assets/yw_front.png");
-        me.addAnimation("walk", "assets/yw_walk1.png", "assets/yw_walk2.png");
-        me.addAnimation("front", "assets/yw_front1.png", "assets/yw_front2.png");
-        me.addAnimation("back", "assets/yw_back1.png", "assets/yw_back2.png");
-        me.scale = 0.7;
+    me = createSprite(width / 2, height / 2 - 30); //create sprite at location 600, 300, width 50, height 100
+    me.addAnimation("stand", data.stage1.player.stand);
+    me.addAnimation("walk", data.stage1.player.walk[0], data.stage1.player.walk[1]);
+    me.addAnimation("front", data.stage1.player.front[0], data.stage1.player.front[1]);
+    me.addAnimation("back", data.stage1.player.back[0], data.stage1.player.back[1]);
+    me.scale = 0.7;
 
-        repeller = createSprite(me.position.x, me.position.y, 300, 300);
-        repeller.visible = false;
+    repeller = createSprite(me.position.x, me.position.y, 300, 300);
+    repeller.visible = false;
 
 
-        chickens = new Group();
-        for (var i = 0; i < 20; i++) {
-            //create a sprite and add the 3 animations
-            var chicken = createSprite(random(0, SCENE_W), random(0, SCENE_H));
-            chicken.addAnimation("walk", "assets/chicken_walk1.png", "assets/chicken_walk2.png");
-            chicken.addAnimation("front", "assets/chicken_front1.png", "assets/chicken_front2.png");
-            chicken.addAnimation("back", "assets/chicken_back1.png", "assets/chicken_back2.png");
-            chicken.velocity.x = random(vel_chicken - 1, vel_chicken + 2);
-            chicken.velocity.y = 0;
-            chickens.add(chicken);
-        }
+    chickens = new Group();
+    for (var i = 0; i < 20; i++) {
+        //create a sprite and add the 3 animations
+        var chicken = createSprite(random(0, SCENE_W), random(0, SCENE_H));
+        chicken.addAnimation("walk", data.stage1.enemy.walk[0], data.stage1.enemy.walk[1] );
+        chicken.addAnimation("front",  data.stage1.enemy.front[0],  data.stage1.enemy.front[1]);
+        chicken.addAnimation("back",  data.stage1.enemy.back[0],  data.stage1.enemy.back[1]);
+        chicken.velocity.x = random(data.stage1.enemy_speed - 1, data.stage1.enemy_speed + 2);
+        chicken.velocity.y = 0;
+        chickens.add(chicken);
+    }
 
-        fences = new Group();
-        //create some background for visual reference
-        for (var i = 28; i < SCENE_W; i += 80) {
-            //create a sprite and add the 3 animations
-            var fence_top = createSprite(i, -28);
+    fences = new Group();
+    //create some background for visual reference
+    for (var i = 28; i < SCENE_W; i += 80) {
+        //create a sprite and add the 3 animations
+        var fence_top = createSprite(i, -28);
 
-            var fence_bottom = createSprite(i, SCENE_H + 28);
-            fence_top.addAnimation("normal", "assets/fence_hori.png");
-            fence_bottom.addAnimation("normal", "assets/fence_hori.png");
-            fences.add(fence_top);
-            fences.add(fence_bottom);
-        }
+        var fence_bottom = createSprite(i, SCENE_H + 28);
+        fence_top.addAnimation("normal", data.setup.fence.horizontal);
+        fence_bottom.addAnimation("normal", data.setup.fence.horizontal);
+        fences.add(fence_top);
+        fences.add(fence_bottom);
+    }
 
-        for (var i = 30; i < SCENE_H; i += 80) {
-            //create a sprite and add the 3 animations
-            var fence_left = createSprite(-28, i);
-            var fence_right = createSprite(SCENE_W + 28, i);
-            fence_left.addAnimation("normal", "assets/fence_verti.png");
-            fence_right.addAnimation("normal", "assets/fence_verti.png");
-            fences.add(fence_left);
-            fences.add(fence_right);
-        }
+    for (var i = 30; i < SCENE_H; i += 80) {
+        //create a sprite and add the 3 animations
+        var fence_left = createSprite(-28, i);
+        var fence_right = createSprite(SCENE_W + 28, i);
+        fence_left.addAnimation("normal", data.setup.fence.vertical);
+        fence_right.addAnimation("normal", data.setup.fence.vertical);
+        fences.add(fence_left);
+        fences.add(fence_right);
+    }
 
-        updateSprites(false);
+    updateSprites(false);
 
-    } //end of setup
+} //end of setup
 
 function draw() {
     //keypad control for human
@@ -125,14 +134,30 @@ function draw() {
     chickens.collide(fences, reverseDir);
     me.collide(fences);
 
+    
+    //map all sprites based on y position
+    for (var i = 0; i < allSprites.length; i++) {
+        allSprites[i].depth = allSprites[i].position.y;
+    }
+
+    /***draw all game elements***/
+    background(r, g, b);
+
+    camera.on();
+    noStroke();
+    fill(0, 0, 0, 60);
+    ellipse(me.position.x, me.position.y + 50, 50, 20);
+    fill(0, 0, 0, 40);
+    for (var i = 0; i < chickens.length; i++) {
+        ellipse(chickens[i].position.x, chickens[i].position.y + 30, 45, 18);
+    }
+    drawSprites();
 
     ////////////////////switch game stage////////////////////////
     if (started) {
-        //        $("Canvas").click(function (event) {
         $("#caption").hide();
         $("#chicken").show();
 
-        //        });
         if (!updateSpritesActived) {
             updateSprites(true);
             updateSpritesActived = true;
@@ -140,6 +165,7 @@ function draw() {
     }
     if (chickens.length > 1) { //man chase chicken
         //print number of chicken caught
+        vel_me = data.stage1.player_speed;
         document.getElementById('chicken').innerHTML = counter + " chickens caught ";
         camera.position.x = me.position.x;
         camera.position.y = me.position.y;
@@ -152,16 +178,16 @@ function draw() {
 
     } else { //chicken chase man
         document.getElementById("chicken").innerHTML = captions[0];
-        vel_me = 5;
-        vel_chicken = 3;
+        vel_me = data.stage2.player_speed;
+        vel_chicken = data.stage2.player_speed;
         if (!meDied) {
             camera.position.x = me.position.x;
             camera.position.y = me.position.y;
             repeller.remove();
             chickens.collide(me, die_me);
-            r = 200;
-            g = 0;
-            b = 200;
+            r = data.stage2.background.red;
+            g = data.stage2.background.green;
+            b = data.stage2.background.blue;
             vel_me = 10;
 
             for (var i = 0; i < chickens.length; i++) {
@@ -189,9 +215,9 @@ function draw() {
             $("#caption").css("background-color", "transparent");
             document.getElementById("caption").innerHTML = captions[1];
 
-            r = 10;
-            g = 10;
-            b = 10;
+            r = data.gameOver.background.red;
+            g = data.gameOver.background.green;
+            b = data.gameOver.background.blue;
 
             //chicken walks around
             camera.position.x = width / 2;
@@ -199,26 +225,6 @@ function draw() {
         }
     }
 
-
-
-
-    //map all sprites based on y position
-    for (var i = 0; i < allSprites.length; i++) {
-        allSprites[i].depth = allSprites[i].position.y;
-    }
-
-    /***draw all game elements***/
-    background(r, g, b);
-
-    camera.on();
-    noStroke();
-    fill(0, 0, 0, 60);
-    ellipse(me.position.x, me.position.y + 50, 50, 20);
-    fill(0, 0, 0, 40);
-    for (var i = 0; i < chickens.length; i++) {
-        ellipse(chickens[i].position.x, chickens[i].position.y + 30, 45, 18);
-    }
-    drawSprites();
 }
 
 function resumeGame() {

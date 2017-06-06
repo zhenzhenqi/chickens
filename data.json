@@ -1,0 +1,66 @@
+{
+    "setup":{
+        "fence": {
+            "vertical": "assets/fence_verti.png",
+            "horizontal": "assets/fence_hori.png"
+        }
+    },
+    
+    "stage1": {
+        "background": {
+            "red": 58,
+            "green": 207,
+            "blue": 201
+        },
+        "player_num": 1,
+        "enemy_num": 20,
+        "player_speed": 3,
+        "enemy_speed": 4,
+        "player": {
+            "stand": "assets/yw_stand.png",
+            "front": ["assets/yw_front1.png", "assets/yw_front2.png"],
+            "back": ["assets/yw_back1.png", "assets/yw_back2.png"],
+            "walk": ["assets/yw_walk1.png", "assets/yw_walk2.png"]
+        },
+        "enemy": {
+            "front": ["assets/chicken_front1.png", "assets/chicken_front2.png"],
+            "back": ["assets/chicken_back1.png", "assets/chicken_back2.png"],
+            "walk": ["assets/chicken_walk1.png", "assets/chicken_walk2.png"]
+        }
+    },
+
+
+    "stage2": {
+        "background": {
+            "red": 200,
+            "green": 0,
+            "blue": 200
+        },
+        "player_num": 1,
+        "enemy_num": 1,
+        "player_speed": 4,
+        "enemy_speed": 3,
+        "player": {
+            "front": ["assets/chicken_front1.png", "assets/chicken_front2.png"],
+            "back": ["assets/chicken_back1.png", "assets/chicken_back2.png"],
+            "walk": ["assets/chicken_walk1.png", "assets/chicken_walk2.png"]
+        },
+        "enemy": {
+            "front": ["assets/yw_front1.png", "assets/yw_front2.png"],
+            "back": ["assets/yw_back1.png", "assets/yw_back2.png"],
+            "walk": ["assets/yw_walk1.png", "assets/yw_walk2.png"]
+
+        }
+    },
+    
+    "gameOver":{
+        "background":{
+            "red": 20,
+            "green": 20,
+            "blue": 20
+        }   
+    
+    }
+
+
+}
